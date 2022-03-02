@@ -1,23 +1,52 @@
-import logo from './logo.svg';
 import './App.css';
+import foods from "./foods.json"
+import Foodbox from './components/FoodBox';
+import AddFoodForm from './components/AddFoodForm';
+import Search from './components/Search';
+import { useState } from 'react';
 
 function App() {
+  const [foodsArray, setFoodsArray] = useState(foods);
+  const [foodsArraySearch, setFoodsArraySearch] = useState(foods);
+
+  function addFood(newFood) {
+    setFoodsArray([...foods, newFood])
+  }
+
+  function searchFilter(stringa) {
+    let filteredArray
+    console.log(stringa);
+    if (stringa === " ") filteredArray = foodsArray
+
+    else {
+      filteredArray = foodsArraySearch.filter((food) => {
+        return food.name.toLowerCase().includes(stringa.toLowerCase())
+      })
+    }
+    setFoodsArray(filteredArray)
+  }
+
+  function deleteFoodById(id) {
+    setFoodsArray(foodsArray.filter(food => food.name !== id))
+  }
+
+  function toggleForm(){
+  
+  }
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Search searchFilter={searchFilter} />
+      <AddFoodForm className="food-form" addFood={addFood} />
+      <button>Show</button>
+      <div className='foodbox-container'>
+        {foodsArray.map((food) => {
+          return (
+            <Foodbox deleteFoodById={deleteFoodById} key={food.name} food={food} />
+          )
+        })}
+      </div>
     </div>
   );
 }
